@@ -17,7 +17,8 @@ class Encoder(nn.Module):
         _, lens_argsort_argsort = torch.sort(lens_argsort, 0)
         seq_ = torch.index_select(seq, 0, lens_argsort)
         seq_embd = self.dropout_embedding(seq_)
-        packed = pack_padded_sequence(seq_embd, lens_sorted, batch_first=True)
+        lens_sorted_1 = lens_sorted.cpu().to(torch.int64)
+        packed = pack_padded_sequence(seq_embd, lens_sorted_1, batch_first=True)
 
         self.encoder.flatten_parameters()
 

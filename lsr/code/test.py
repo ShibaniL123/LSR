@@ -20,7 +20,7 @@ DECAY_RATE = 0.95
 parser = argparse.ArgumentParser()
 
 # configurations for data
-parser.add_argument('--data_path', type=str, default='./prepro_data')
+parser.add_argument('--data_path', type=str, default='/sbksvol/shibani/LSR/lsr/code/prepro_data')
 parser.add_argument('--model_name', type = str, default = 'LSR', help = 'name of the model')
 parser.add_argument('--train_prefix', type = str, default = 'dev_train')
 parser.add_argument('--test_prefix', type = str, default = 'dev_dev')
@@ -57,7 +57,7 @@ parser.add_argument('--num_epoch', type=int, default=MAX_EPOCH, help='Number of 
 parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='Training batch size.')
 parser.add_argument('--max_grad_norm', type=float, default=5.0, help='Gradient clipping.')
 parser.add_argument('--log_step', type=int, default=30, help='Print log every k steps.')
-parser.add_argument('--log', type=str, default='logs.txt', help='Write training log to file.')
+parser.add_argument('--log', type=str, default='/sbksvol/shibani/LSR/logs.txt', help='Write training log to file.')
 parser.add_argument('--save_epoch', type=int, default=100, help='Save model checkpoints every k epochs.')
 parser.add_argument('--save_dir', type=str, default='./saved_models', help='Root dir for saving models.')
 parser.add_argument('--id', type=str, default='00', help='Model ID under which to save models.')

@@ -7,6 +7,7 @@ import torch
 import random
 import datetime
 from datasets import load_dataset
+from code_bert import LSR
 
 dataset = load_dataset("docred")
 
@@ -14,7 +15,7 @@ DOCRED = 'docred'
 
 data_set = DOCRED
 
-BATCH_SIZE = 20
+BATCH_SIZE = 8
 HIDDEN_DIM = 120# please use 216 for BERT
 #for BERT---
 LR = 1e-3 
@@ -29,7 +30,7 @@ parser = argparse.ArgumentParser()
 
 # configurations for data
 #Path here from sbksvol 
-parser.add_argument('--data_path', type=str, default='./prepro_data')
+parser.add_argument('--data_path', type=str, default='/sbksvol/shibani/LSR/lsr/code/prepro_data')
 
 parser.add_argument('--model_name', type = str, default = 'LSR', help = '[LSR, LSR_bert], name of the model')
 
@@ -66,7 +67,7 @@ parser.add_argument('--num_epoch', type=int, default=MAX_EPOCH, help='Number of 
 parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='Training batch size.')
 parser.add_argument('--max_grad_norm', type=float, default=5.0, help='Gradient clipping.')
 parser.add_argument('--log_step', type=int, default=30, help='Print log every k steps.')
-parser.add_argument('--log', type=str, default='logs.txt', help='Write training log to file.')
+parser.add_argument('--log', type=str, default='/sbksvol/shibani/LSR/logs.txt', help='Write training log to file.')
 parser.add_argument('--save_epoch', type=int, default=100, help='Save model checkpoints every k epochs.')
 parser.add_argument('--save_dir', type=str, default='./saved_models', help='Root dir for saving models.')
 parser.add_argument('--id', type=str, default='00', help='Model ID under which to save models.')
@@ -113,7 +114,7 @@ model = {
 	'LSR': models.LSR,
     'LSR_bert': LSR
 }
-
+print("gpu", torch.cuda.is_available())
 if args.model_name == 'LSR_bert':
     con = config.ConfigBert(args)
 else:

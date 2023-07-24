@@ -720,7 +720,7 @@ class Config(object):
                 output = output.data.cpu().numpy()
 
                 optimizer.zero_grad()
-
+                torch.cuda.empty_cache()
                 loss.backward()
 
                 torch.nn.utils.clip_grad_norm_(model.parameters(), self.max_grad_norm)

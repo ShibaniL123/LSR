@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shib-lsr-re
+  labels:
+    k8s-app: shib-lsr-re
+  namespace: sbks
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: shib-lsr-re
+        image: jiaweitang/sbks-torch:latest
+        command:
+        - "/bin/bash"
+        - "-c"
+        - >
+          cd /root &&
+          git clone https://ShibaniL123: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@github.com/ShibaniL123/LSR.git &&
+          cd /root/LSR/lsr/code &&
+          pip install datasets pytorch_transformers
+          python3 train.py
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "20G"
+            cpu: 2
+            nvidia.com/gpu: 2
+          requests:
+            memory: "20G"
+            cpu: 2
+            nvidia.com/gpu: 2
+        volumeMounts:
+          - mountPath: "/sbksvol"
+            name: sbksvol
+          - mountPath: /dev/shm
+            name: dshm
+      restartPolicy: Never
+      volumes:
+        - name: sbksvol
+          persistentVolumeClaim:
+            claimName: sbksvol
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.product
+                operator: In
+                values:
+                - NVIDIA-GeForce-RTX-2080-Ti
+                - NVIDIA-GeForce-GTX-1080-Ti
