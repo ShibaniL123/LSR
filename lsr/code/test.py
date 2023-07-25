@@ -11,7 +11,7 @@ data_set = DOCRED
 BATCH_SIZE = 20
 HIDDEN_DIM = 120
 LR = 1e-3
-MAX_EPOCH = 200
+MAX_EPOCH = 20
 SEED = 0 #random.randint(0, 10000)
 NAME = 'Struct'
 EMB_DIM = 100
@@ -51,14 +51,14 @@ parser.add_argument('--dropout_gcn', type=float, default=0.3, help='GCN  dropout
 parser.add_argument('--lr', type=float, default=LR, help='Applies to sgd and adagrad.')
 parser.add_argument('--lr_decay', type=float, default=DECAY_RATE, help='Learning rate decay rate.')
 parser.add_argument('--decay_epoch', type=int, default=7, help='Decay learning rate after this epoch.')
-parser.add_argument('--evaluate_epoch', type=int, default=30, help='Evaluate after this epoch.')
+parser.add_argument('--evaluate_epoch', type=int, default=20, help='Evaluate after this epoch.')
 parser.add_argument('--optim', choices=['sgd', 'adagrad', 'adam', 'adamax'], default='adam', help='Optimizer: sgd, adagrad, adam or adamax.')
 parser.add_argument('--num_epoch', type=int, default=MAX_EPOCH, help='Number of total training epochs.')
 parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='Training batch size.')
 parser.add_argument('--max_grad_norm', type=float, default=5.0, help='Gradient clipping.')
 parser.add_argument('--log_step', type=int, default=30, help='Print log every k steps.')
 parser.add_argument('--log', type=str, default='/sbksvol/shibani/LSR/logs.txt', help='Write training log to file.')
-parser.add_argument('--save_epoch', type=int, default=100, help='Save model checkpoints every k epochs.')
+parser.add_argument('--save_epoch', type=int, default=10, help='Save model checkpoints every k epochs.')
 parser.add_argument('--save_dir', type=str, default='./saved_models', help='Root dir for saving models.')
 parser.add_argument('--id', type=str, default='00', help='Model ID under which to save models.')
 parser.add_argument('--info', type=str, default='', help='Optional info for the experiment.')
