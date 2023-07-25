@@ -112,7 +112,7 @@ if args.model_name == 'LSR_bert':
     from code_bert import LSR # Noted that hidden_dim is configured as 216 for BERT-based in our paper.
 model = {
 	'LSR': models.LSR,
-    'LSR_bert': LSR
+    #'LSR_bert': LSR
 }
 print("gpu", torch.cuda.is_available())
 if args.model_name == 'LSR_bert':
