@@ -619,6 +619,8 @@ class Config(object):
 
     def train(self, model_pattern, model_name):
 
+        file_path = "/sbksvol/shibani/logs_lsr.txt"
+        file = open(file_path, "w")
         ori_model = model_pattern(config = self)
         if self.pretrain_model != None:
             ori_model.load_state_dict(torch.load(self.pretrain_model))
@@ -747,12 +749,14 @@ class Config(object):
                     cur_loss = total_loss / self.period
                     elapsed = time.time() - start_time
                     logging('| epoch {:2d} | step {:4d} |  ms/b {:5.2f} | train loss {:5.3f} | NA acc: {:4.2f} | not NA acc: {:4.2f}  | tot acc: {:4.2f} '.format(epoch, global_step, elapsed * 1000 / self.period, cur_loss, self.acc_NA.get(), self.acc_not_NA.get(), self.acc_total.get()))
+                    print('| epoch {:2d} | step {:4d} |  ms/b {:5.2f} | train loss {:5.3f} | NA acc: {:4.2f} | not NA acc: {:4.2f}  | tot acc: {:4.2f} '.format(epoch, global_step, elapsed * 1000 / self.period, cur_loss, self.acc_NA.get(), self.acc_not_NA.get(), self.acc_total.get()),file=file)
                     total_loss = 0
                     start_time = time.time()
 
             if epoch > self.evaluate_epoch:
 
                 logging('-' * 89)
+                print('-' * 89,file=file)
                 eval_start_time = time.time()
                 model.eval()
 
@@ -760,7 +764,9 @@ class Config(object):
 
                 model.train()
                 logging('| epoch {:3d} | time: {:5.2f}s'.format(epoch, time.time() - eval_start_time))
+                print(('| epoch {:3d} | time: {:5.2f}s'.format(epoch, time.time() - eval_start_time)),file=file)
                 logging('-' * 89)
+                print('-' * 89,file=file)
 
                 if f1 > best_f1:
                     best_f1 = f1
@@ -769,6 +775,7 @@ class Config(object):
                     path = os.path.join(self.checkpoint_dir, model_name)
                     torch.save(ori_model.state_dict(), path)
                     logging("best f1 is: {}, epoch is: {}, save path is: {}".format(best_f1, best_epoch, path))
+                    print("best f1 is: {}, epoch is: {}, save path is: {}".format(best_f1, best_epoch, path),file=file)
 
             if epoch > self.decay_epoch:  # and epoch < self.evaluate_epoch:# and epoch < self.evaluate_epoch:
                 if self.optim == 'sgd' and f1 < dev_score_list[-1]:
@@ -781,13 +788,17 @@ class Config(object):
 
             dev_score_list.append(f1)
             print("train time for epoch {}: {}".format(epoch,time.time()-epoch_start_time))
+            print("train time for epoch {}: {}".format(epoch,time.time()-epoch_start_time),file = file)
 
         print("Finish training")
         print("Best epoch = {} | F1 {}, auc = {}".format(best_epoch, best_f1, best_auc))
+        print("Best epoch = {} | F1 {}, auc = {}".format(best_epoch, best_f1, best_auc),file=file)
         print("Storing best result...")
         print("Finish storing")
 
     def test(self, model, model_name, output=False, input_theta=-1):
+        file_path = "/sbksvol/shibani/logs_lsr.txt"
+        file = open(file_path, "w")
         data_idx = 0
         eval_start_time = time.time()
         test_result_ignore = []
@@ -921,9 +932,10 @@ class Config(object):
         auc = sklearn.metrics.auc(x = pr_x, y = pr_y)
         if not self.is_test:
             logging('ALL   : Theta {:3.4f} | F1 {:3.4f} | Precision {:3.4f} | Recall {:3.4f} | AUC {:3.4f} '.format(theta, f1, pr_x[f1_pos], pr_y[f1_pos], auc))
+            print('ALL   : Theta {:3.4f} | F1 {:3.4f} | Precision {:3.4f} | Recall {:3.4f} | AUC {:3.4f} '.format(theta, f1, pr_x[f1_pos], pr_y[f1_pos], auc),file=file)
         else:
             logging('ma_f1{:3.4f} | input_theta {:3.4f} test_result F1 {:3.4f} | AUC {:3.4f}'.format(f1, input_theta, f1_arr[w], pr_x[w], pr_y[w], auc))
-
+            print('ma_f1{:3.4f} | input_theta {:3.4f} test_result F1 {:3.4f} | AUC {:3.4f}'.format(f1, input_theta, f1_arr[w], pr_x[w], pr_y[w], auc),file=file)
         #logging("precision {}, recall {}".format(pr_y, pr_x))
 
         if output:
@@ -951,6 +963,7 @@ class Config(object):
         auc = sklearn.metrics.auc(x = pr_x, y = pr_y)
 
         logging('Ignore ma_f1 {:3.4f} | input_theta {:3.4f} test_result F1 {:3.4f} | Precision {:3.4f}| Recall {:3.4f}| AUC {:3.4f}'.format(f1_ig, input_theta, f1_arr[w], pr_x[w], pr_y[w], auc))
+        print('Ignore ma_f1 {:3.4f} | input_theta {:3.4f} test_result F1 {:3.4f} | Precision {:3.4f}| Recall {:3.4f}| AUC {:3.4f}'.format(f1_ig, input_theta, f1_arr[w], pr_x[w], pr_y[w], auc),file=file)
 
         return f1, f1_ig, auc, pr_x, pr_y
 
